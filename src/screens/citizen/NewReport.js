@@ -1,0 +1,226 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MobileContainer, Button, Input } from '../../components';
+import { useAppContext } from '../../context';
+import { useImagePicker, useLocation } from '../../hooks';
+import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS, SHADOWS } from '../../utils';
+
+export default function NewReport({ navigation }) {
+    const {
+        image,
+        setImage,
+        pickFromGallery: pickImageGallery,
+        captureFromCamera: takePhoto,
+        pickVideoFromGallery: pickVideoGallery,
+        captureVideoFromCamera: recordVideo
+    } = useImagePicker();
+
+    const {
+        address,
+        setAddress,
+        loading: loadingLocation,
+        detectLocation
+    } = useLocation();
+
+    const [video, setVideo] = useState(null);
+    const [mediaType, setMediaType] = useState(null); // 'image' or 'video'
+    const [description, setDescription] = useState('');
+
+    const { setCurrentReport } = useAppContext();
+
+    const handleTakePhoto = async () => {
+        const uri = await takePhoto();
+        if (uri) {
+            setVideo(null);
+            setMediaType('image');
+        }
+    };
+
+    const handlePickImage = async () => {
+        const uri = await pickImageGallery();
+        if (uri) {
+            setVideo(null);
+            setMediaType('image');
+        }
+    };
+
+    const handleRecordVideo = async () => {
+        const uri = await recordVideo();
+        if (uri) {
+            setImage(null);
+            setVideo(uri);
+            setMediaType('video');
+        }
+    };
+
+    const handlePickVideo = async () => {
+        const uri = await pickVideoGallery();
+        if (uri) {
+            setImage(null);
+            setVideo(uri);
+            setMediaType('video');
+        }
+    };
+
+    const handleDetectLocation = async () => {
+        const result = await detectLocation();
+        if (result) {
+            Alert.alert('Success', 'Location detected successfully!');
+        }
+    };
+
+    const handleSubmit = () => {
+        if (!image && !video) {
+            Alert.alert('Error', 'Please capture or select an image or video');
+            return;
+        }
+        setCurrentReport({
+            image,
+            video,
+            mediaType,
+            description,
+            address,
+            timestamp: new Date()
+        });
+        navigation.navigate('AIProcessing');
+    };
+
+    return (
+        <MobileContainer>
+            <SafeAreaView style={styles.container} edges={['top']}>
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.textPrimary} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>New Report</Text>
+                    <View style={{ width: 24 }} />
+                </View>
+
+                <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                    <View style={styles.content}>
+                        {/* Media Capture Area */}
+                        <View style={styles.imageContainer}>
+                            {image ? (
+                                <Image source={{ uri: image }} style={styles.image} />
+                            ) : video ? (
+                                <View style={styles.videoPlaceholder}>
+                                    <Ionicons name="videocam" size={64} color={COLORS.primary} />
+                                    <Text style={styles.videoText}>Video Selected</Text>
+                                    <Text style={styles.videoSubtext}>Ready to submit</Text>
+                                </View>
+                            ) : (
+                                <View style={styles.placeholder}>
+                                    <Ionicons name="camera" size={64} color={COLORS.gray400} />
+                                    <Text style={styles.placeholderText}>Capture or select violation photo/video</Text>
+                                </View>
+                            )}
+                        </View>
+
+                        {/* Photo Buttons */}
+                        <View style={styles.cameraButtons}>
+                            <Button onPress={handleTakePhoto} style={styles.cameraButton}>
+                                <Ionicons name="camera" size={20} color={COLORS.white} />
+                                <Text style={styles.buttonText}>Take Photo</Text>
+                            </Button>
+                            <Button onPress={handlePickImage} variant="secondary" style={styles.cameraButton}>
+                                <Ionicons name="images" size={20} color={COLORS.primary} />
+                                <Text style={styles.buttonTextSecondary}>Gallery Photo</Text>
+                            </Button>
+                        </View>
+
+                        {/* Video Buttons */}
+                        <View style={styles.cameraButtons}>
+                            <Button onPress={handleRecordVideo} style={[styles.cameraButton, { backgroundColor: COLORS.secondary }]}>
+                                <Ionicons name="videocam" size={20} color={COLORS.white} />
+                                <Text style={styles.buttonText}>Record Video</Text>
+                            </Button>
+                            <Button onPress={handlePickVideo} variant="secondary" style={styles.cameraButton}>
+                                <Ionicons name="film" size={20} color={COLORS.primary} />
+                                <Text style={styles.buttonTextSecondary}>Gallery Video</Text>
+                            </Button>
+                        </View>
+
+                        {/* Address with Auto-Detect */}
+                        <View style={styles.addressContainer}>
+                            <Input
+                                label="Location Address"
+                                placeholder="Enter address or use GPS..."
+                                value={address}
+                                onChangeText={setAddress}
+                                multiline
+                                numberOfLines={2}
+                                inputStyle={styles.addressInput}
+                            />
+                            <TouchableOpacity
+                                style={styles.locationButton}
+                                onPress={handleDetectLocation}
+                                disabled={loadingLocation}
+                            >
+                                {loadingLocation ? (
+                                    <ActivityIndicator size="small" color={COLORS.white} />
+                                ) : (
+                                    <Ionicons name="location" size={24} color={COLORS.white} />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Description */}
+                        <Input
+                            label="Description (Optional)"
+                            placeholder="Add details about the violation..."
+                            value={description}
+                            onChangeText={setDescription}
+                            multiline
+                            numberOfLines={4}
+                        />
+
+                        {/* Submit Button */}
+                        <Button onPress={handleSubmit} fullWidth disabled={!image && !video}>
+                            Submit Report
+                        </Button>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </MobileContainer>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: { flex: 1 },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
+    title: { fontSize: FONT_SIZES.lg, fontWeight: FONT_WEIGHTS.bold },
+    scrollContent: { flex: 1 },
+    content: { flex: 1, paddingHorizontal: SPACING.lg, paddingBottom: SPACING.xl },
+    imageContainer: { width: '100%', height: 300, borderRadius: BORDER_RADIUS.xl, overflow: 'hidden', marginBottom: SPACING.lg, ...SHADOWS.md },
+    image: { width: '100%', height: '100%' },
+    placeholder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    placeholderText: { fontSize: FONT_SIZES.sm, marginTop: SPACING.md, textAlign: 'center', color: COLORS.textSecondary },
+    videoPlaceholder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    videoText: { fontSize: FONT_SIZES.md, marginTop: SPACING.md, fontWeight: FONT_WEIGHTS.semibold },
+    videoSubtext: { fontSize: FONT_SIZES.sm, marginTop: SPACING.xs, color: COLORS.textSecondary },
+    cameraButtons: { flexDirection: 'row', gap: SPACING.md, marginBottom: SPACING.lg },
+    cameraButton: { flex: 1, flexDirection: 'row', gap: SPACING.sm, justifyContent: 'center' },
+    buttonText: { fontWeight: FONT_WEIGHTS.semibold, color: COLORS.white },
+    buttonTextSecondary: { fontWeight: FONT_WEIGHTS.semibold, color: COLORS.primary },
+    addressContainer: {
+        position: 'relative',
+        marginBottom: SPACING.lg
+    },
+    addressInput: {
+        paddingRight: 64,
+    },
+    locationButton: {
+        position: 'absolute',
+        right: 12,
+        top: 44,
+        backgroundColor: COLORS.primary,
+        width: 48,
+        height: 48,
+        borderRadius: BORDER_RADIUS.lg,
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...SHADOWS.md,
+    },
+});

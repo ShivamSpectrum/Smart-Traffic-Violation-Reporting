@@ -58,13 +58,7 @@ git clone https://github.com/jaiswaraditya14/Traffic_Eye.git
 cd Traffic_Eye
 ```
 
-### 2. Navigate to the App Directory
-
-```bash
-cd Traffic_EYE/TrafficViolationApp
-```
-
-### 3. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
@@ -72,7 +66,7 @@ npm install
 
 This will download all required packages (may take a few minutes on first run).
 
-### 4. Start the Development Server
+### 3. Start the Development Server
 
 ```bash
 npm start
@@ -84,7 +78,7 @@ or
 npx expo start
 ```
 
-### 5. Run the App
+### 4. Run the App
 
 Once the development server starts, you'll see a QR code in your terminal.
 
@@ -104,25 +98,32 @@ Once the development server starts, you'll see a QR code in your terminal.
 
 ```
 Traffic_Eye/
-└── Traffic_EYE/
-    └── TrafficViolationApp/
-        ├── App.js                 # App entry point
-        ├── app.json               # Expo configuration
-        ├── package.json           # Dependencies
-        ├── assets/                # Images and icons
-        └── src/
-            ├── components/        # Reusable UI components
-            ├── context/           # React Context providers
-            ├── navigation/        # Navigation configuration
-            ├── screens/           # All app screens
-            │   ├── CitizenHome.js
-            │   ├── CitizenSignIn.js
-            │   ├── NewReport.js
-            │   ├── AIResultsVerification.js
-            │   ├── OfficerDashboard.js
-            │   └── ... (23 screens)
-            └── utils/             # Utility functions
+├── docs/                      # 📚 All documentation
+├── database/                  # 🗄️ Database schemas and scripts
+├── assets/                    # 🎨 Images, icons, and static files
+├── src/                       # 💻 Source code
+│   ├── components/           # Reusable UI components
+│   │   ├── common/          # Shared components
+│   │   ├── citizen/         # Citizen-specific components
+│   │   └── officer/         # Officer-specific components
+│   ├── screens/             # Screen components
+│   │   ├── auth/           # Authentication screens
+│   │   ├── citizen/        # Citizen screens
+│   │   ├── officer/        # Officer screens
+│   │   └── shared/         # Shared screens
+│   ├── navigation/          # Navigation configuration
+│   ├── context/             # React Context providers
+│   ├── services/            # External services (Supabase, APIs)
+│   ├── utils/               # Utility functions and constants
+│   └── hooks/               # Custom React hooks
+├── App.js                    # App entry point
+├── app.json                  # Expo configuration
+└── package.json              # Dependencies
 ```
+
+> 📖 For detailed structure documentation, see [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
+
+
 
 ---
 
