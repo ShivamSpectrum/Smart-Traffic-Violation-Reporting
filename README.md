@@ -178,9 +178,11 @@ This project is for educational purposes.
 ---
 
 ## 👨‍💻 Author
-
+**Shivam Chauhan**
+- GitHub: [@ShivamSpectrum](https://github.com/ShivamSpectrum)
+**Mohit Jain**
+- GitHub: []()
 **Aditya Jaiswar**
-
 - GitHub: [@jaiswaraditya14](https://github.com/jaiswaraditya14)
 
 ---
