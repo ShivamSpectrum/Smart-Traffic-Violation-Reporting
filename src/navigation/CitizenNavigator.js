@@ -3,6 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../utils';
+// import ReferScreen from "../screens/ReferScreen";
+import Refer from "../screens/citizen/Refer";
+
 
 // Import Screens from barrel
 import {
@@ -53,7 +56,9 @@ function CitizenTabNavigator() {
 export default function CitizenNavigator() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {/* <Stack.Screen name="Refer"component={ReferScreen}options={{ title: "Refer a Friend" }}/> */}
             <Stack.Screen name="CitizenMain" component={CitizenTabNavigator} />
+            <Stack.Screen name="Refer"component={Refer}options={{ title: "Refer a Friend" }}/>
             <Stack.Screen name="PermissionsRequest" component={PermissionsRequest} />
             <Stack.Screen name="NewReport" component={NewReport} />
             <Stack.Screen name="AIProcessing" component={AIProcessing} />

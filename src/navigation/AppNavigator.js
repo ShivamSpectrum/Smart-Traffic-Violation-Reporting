@@ -60,8 +60,15 @@ export default function AppNavigator() {
                         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
                     </>
                 ) : !profile ? (
-                    // Profile loading state
-                    <Stack.Screen name="Loading" component={SplashScreen} />
+                    // Fallback: If authenticated but profile is missing, go to Role Selection
+                    // This prevents getting stuck on Splash if database record is missing
+                    <>
+                        <Stack.Screen name="RoleSelection" component={RoleSelection} />
+                        <Stack.Screen name="CitizenSignIn" component={CitizenSignIn} />
+                        <Stack.Screen name="CitizenSignUp" component={CitizenSignUp} />
+                        <Stack.Screen name="OfficerSignIn" component={OfficerSignIn} />
+                        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+                    </>
                 ) : profile.role === 'citizen' ? (
                     // Citizen Flow
                     <Stack.Screen name="Citizen" component={CitizenNavigator} />

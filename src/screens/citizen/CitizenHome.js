@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MobileContainer, Button } from '../../components';
+import { MobileContainer, Button, ReferralFAB } from '../../components';
 import { useAuth } from '../../context';
 import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS, SHADOWS, formatNumber } from '../../utils';
+// import { Button } from "react-native";
+
 
 export default function CitizenHome({ navigation }) {
     const { profile } = useAuth();
@@ -70,6 +72,10 @@ export default function CitizenHome({ navigation }) {
                             </View>
                         </Button>
                     </View>
+
+                    {/* Referral FAB is rendered separately at the bottom */}
+                    <ReferralFAB />
+
 
                     {/* Information Section */}
                     <View style={styles.section}>
